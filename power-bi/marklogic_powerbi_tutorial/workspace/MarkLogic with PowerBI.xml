@@ -1,0 +1,351 @@
+<export><workspace name="MarkLogic with PowerBI"><query name="insert orders template" focus="false" listorder="1" taborder="1" active="true" database="12952860939916066628" server="7791551376143750635" database-name="Documents" server-name="8005-odbc-documents" mode="xquery">(: Insert a template that will generate an view for orders data.
+    Check that the Schemas database associated with the Documents database
+    contains the TDE template.
+:)
+    
+    xquery version "1.0-ml";
+    import module namespace tde = "http://marklogic.com/xdmp/tde" at "/MarkLogic/tde.xqy";
+
+if (xdmp:database-name(xdmp:database()) = "Documents")  then        
+    let $orders-TDE:=
+    &lt;template xmlns="http://marklogic.com/xdmp/tde"&gt;
+     &lt;context&gt;/order&lt;/context&gt;
+       &lt;collections&gt;
+         &lt;collections-and&gt;
+           &lt;collection&gt;PowerBI&lt;/collection&gt;
+           &lt;collection&gt;Orders&lt;/collection&gt;
+         &lt;/collections-and&gt;
+       &lt;/collections&gt;
+       &lt;rows&gt;
+         &lt;row&gt;
+           &lt;schema-name&gt;customer360&lt;/schema-name&gt;
+           &lt;view-name&gt;orders&lt;/view-name&gt;
+           &lt;columns&gt;
+             &lt;column&gt;
+               &lt;name&gt;row_id&lt;/name&gt;
+               &lt;scalar-type&gt;long&lt;/scalar-type&gt;
+               &lt;val&gt;Row_ID&lt;/val&gt;
+             &lt;/column&gt;
+             &lt;column&gt;
+               &lt;name&gt;order_id&lt;/name&gt;
+               &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+               &lt;val&gt;Order_ID&lt;/val&gt;
+            &lt;/column&gt;
+            &lt;column&gt;
+              &lt;name&gt;order_date&lt;/name&gt;
+              &lt;scalar-type&gt;date&lt;/scalar-type&gt;
+              &lt;val&gt;
+    xs:date(
+    fn:concat(
+    fn:tokenize(Order_Date, "/")[3],
+    "-",
+    if ( fn:string-length(fn:tokenize(Order_Date, "/")[1]) eq 1 ) then fn:concat("0", fn:tokenize(Order_Date, "/")[1]) else fn:tokenize(Order_Date, "/")[1] ,
+    "-",
+    if ( fn:string-length(fn:tokenize(Order_Date, "/")[2]) eq 1 ) then fn:concat("0", fn:tokenize(Order_Date, "/")[2]) else fn:tokenize(Order_Date, "/")[2]
+    )
+    )
+              &lt;/val&gt;
+            &lt;/column&gt;
+            &lt;column&gt;
+              &lt;name&gt;ship_date&lt;/name&gt;
+              &lt;scalar-type&gt;date&lt;/scalar-type&gt;
+              &lt;val&gt;
+    xs:date(
+    fn:concat(
+    fn:tokenize(Ship_Date, "/")[3],
+    "-",
+    if ( fn:string-length(fn:tokenize(Ship_Date, "/")[1]) eq 1 ) then fn:concat("0", fn:tokenize(Ship_Date, "/")[1]) else fn:tokenize(Ship_Date, "/")[1] ,
+    "-",
+    if ( fn:string-length(fn:tokenize(Ship_Date, "/")[2]) eq 1 ) then fn:concat("0", fn:tokenize(Ship_Date, "/")[2]) else fn:tokenize(Ship_Date, "/")[2]
+    )
+    )
+              &lt;/val&gt;
+            &lt;/column&gt;
+            &lt;column&gt;
+          &lt;name&gt;ship_mode&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Ship_Mode&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;customer_id&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Customer_ID&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;customer_name&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Customer_Name&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;segment&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Segment&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;postal_code&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Postal_Code&lt;/val&gt;
+          &lt;nullable&gt;true&lt;/nullable&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;city&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;City&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;state&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;State&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;country&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Country&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;region&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Region&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;market&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Market&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;product_id&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Product_ID&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;category&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Category&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;sub_category&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Sub-Category&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;product_name&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Product_Name&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;sales&lt;/name&gt;
+          &lt;scalar-type&gt;decimal&lt;/scalar-type&gt;
+          &lt;val&gt;replace( substring-after(Sales, '$'), ',', '')&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;quantity&lt;/name&gt;
+          &lt;scalar-type&gt;int&lt;/scalar-type&gt;
+          &lt;val&gt;replace( Quantity, ',', '')&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;discount&lt;/name&gt;
+          &lt;scalar-type&gt;decimal&lt;/scalar-type&gt;
+          &lt;val&gt;Discount&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;profit&lt;/name&gt;
+          &lt;scalar-type&gt;decimal&lt;/scalar-type&gt;
+          &lt;val&gt;replace(replace(Profit, '\$', ''), ',', '')&lt;/val&gt; &lt;!-- strip out $ and , but leave - in place --&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;shipping_cost&lt;/name&gt;
+          &lt;scalar-type&gt;decimal&lt;/scalar-type&gt;
+          &lt;val&gt;replace( Shipping_Cost, ',', '')&lt;/val&gt;
+        &lt;/column&gt;
+        &lt;column&gt;
+          &lt;name&gt;order_priority&lt;/name&gt;
+          &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+          &lt;val&gt;Order_Priority&lt;/val&gt;
+        &lt;/column&gt;
+
+      &lt;/columns&gt;
+    &lt;/row&gt;
+      &lt;/rows&gt;
+    &lt;/template&gt;
+
+    return ( 
+      tde:template-insert("/powerbi/order-TDE.xml",$orders-TDE),
+      "order-TDE.xml OK"
+    )
+else ("Please select the 'Documents' database.")
+ </query><query name="insert people template" focus="false" listorder="2" taborder="2" active="true" database="12952860939916066628" server="7791551376143750635" database-name="Documents" server-name="8005-odbc-documents" mode="xquery">(: Insert a template that will generate a view for people data. 
+    Check that the Schemas database associated with the Documents database
+    contains the TDE template.
+:)
+    
+    xquery version "1.0-ml";
+    import module namespace tde = "http://marklogic.com/xdmp/tde" at "/MarkLogic/tde.xqy";
+
+if (xdmp:database-name(xdmp:database()) = "Documents")  then          
+    let $people-TDE:=
+    &lt;template xmlns="http://marklogic.com/xdmp/tde"&gt;
+     &lt;context&gt;/person&lt;/context&gt;
+       &lt;collections&gt;
+         &lt;collections-and&gt;
+           &lt;collection&gt;PowerBI&lt;/collection&gt;
+           &lt;collection&gt;People&lt;/collection&gt;
+         &lt;/collections-and&gt;
+       &lt;/collections&gt;
+       &lt;rows&gt;
+         &lt;row&gt;
+           &lt;schema-name&gt;customer360&lt;/schema-name&gt;
+           &lt;view-name&gt;people&lt;/view-name&gt;
+           &lt;columns&gt;
+             &lt;column&gt;
+               &lt;name&gt;id&lt;/name&gt;
+               &lt;scalar-type&gt;long&lt;/scalar-type&gt;
+               &lt;val&gt;ID&lt;/val&gt;
+             &lt;/column&gt;
+             &lt;column&gt;
+               &lt;name&gt;person&lt;/name&gt;
+               &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+               &lt;val&gt;Person&lt;/val&gt;
+            &lt;/column&gt;
+            &lt;column&gt;
+              &lt;name&gt;region&lt;/name&gt;
+              &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+              &lt;val&gt;Region&lt;/val&gt;
+            &lt;/column&gt;
+          &lt;/columns&gt;
+        &lt;/row&gt;
+      &lt;/rows&gt;
+    &lt;/template&gt;
+    
+    return ( 
+      tde:template-insert("/powerbi/people-TDE.xml",$people-TDE),
+      "people-TDE.xml OK"
+    ) 
+else ("Please select the 'Documents' database.")  
+  </query><query name="insert returns template" focus="false" listorder="3" taborder="3" active="true" database="12952860939916066628" server="7791551376143750635" database-name="Documents" server-name="8005-odbc-documents" mode="xquery">(: Insert a template that will generate a view for returns data. 
+    Check that the Schemas database associated with the Documents database
+    contains the TDE template.
+:)
+    
+    xquery version "1.0-ml";
+    import module namespace tde = "http://marklogic.com/xdmp/tde" at "/MarkLogic/tde.xqy";
+
+if (xdmp:database-name(xdmp:database()) = "Documents")  then         
+    let $returns-TDE:=
+    &lt;template xmlns="http://marklogic.com/xdmp/tde"&gt;
+     &lt;context&gt;/return&lt;/context&gt;
+       &lt;collections&gt;
+         &lt;collections-and&gt;
+           &lt;collection&gt;PowerBI&lt;/collection&gt;
+           &lt;collection&gt;Returns&lt;/collection&gt;
+         &lt;/collections-and&gt;
+       &lt;/collections&gt;
+       &lt;rows&gt;
+         &lt;row&gt;
+           &lt;schema-name&gt;customer360&lt;/schema-name&gt;
+           &lt;view-name&gt;returns&lt;/view-name&gt;
+           &lt;columns&gt;
+                 &lt;column&gt;
+               &lt;name&gt;order_id&lt;/name&gt;
+               &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+               &lt;val&gt;Order_ID&lt;/val&gt;
+             &lt;/column&gt;
+             &lt;column&gt;
+               &lt;name&gt;returned&lt;/name&gt;
+               &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+               &lt;val&gt;Returned&lt;/val&gt;
+            &lt;/column&gt;
+            &lt;column&gt;
+              &lt;name&gt;region&lt;/name&gt;
+              &lt;scalar-type&gt;string&lt;/scalar-type&gt;
+              &lt;val&gt;Region&lt;/val&gt;
+            &lt;/column&gt;
+          &lt;/columns&gt;
+        &lt;/row&gt;
+      &lt;/rows&gt;
+    &lt;/template&gt;
+    
+    return ( 
+      tde:template-insert("/powerbi/returns-TDE.xml",$returns-TDE),
+      "returns-TDE.xml OK"
+   )
+else ("Please select the 'Documents' database.")
+  
+  </query><query name="create odbc app server" focus="true" listorder="9" taborder="9" active="true" database="12952860939916066628" server="7146967186533113691" database-name="Documents" server-name="App-Services" mode="xquery">(: Create an ODBC app server that will allow us to establish an ODBC connection to the Documents database .  :)
+
+xquery version "1.0-ml";
+    import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
+    
+    let $config  := admin:get-configuration()
+    let $groupid := admin:group-get-id($config,"Default")
+    let $dbid    := admin:database-get-id($config,"Documents")
+    let $config2 := admin:odbc-server-create($config,$groupid,"8005-odbc-documents","/",8005,"file-system",$dbid)
+    return admin:save-configuration($config2)
+  
+  </query><query name="mlcp script load people data" focus="false" listorder="5" taborder="5" active="true" database="12952860939916066628" server="7791551376143750635" database-name="Documents" server-name="8005-odbc-documents" mode="xquery">(:
+
+    If you are geting started using MLCP, go to https://docs.marklogic.com/guide/mlcp/getting-started for some help.
+
+    The following MLCP command line and options file will help you import people data into the Documents database.
+    The people data is in a csv file named: GlobalSuperstoreOrders2016-people-ID.csv
+
+From a command line, make sure you navigate to the \marklogic_powerbi_tutorial\config directory
+    and type:
+    
+    mlcp.sh -options_file people.txt
+OR
+    mlcp.bat -options_file people.txt
+    
+    The people.txt file contains mlcp import options.
+
+    Once load is complete run this code to make sure you have some people in the Documents database.
+:)
+
+fn:collection("People")[1 to 3]</query><query name="mlcp script load returns" focus="false" listorder="6" taborder="6" active="true" database="12952860939916066628" server="7146967186533113691" database-name="Documents" server-name="App-Services" mode="xquery">(:
+
+    If you are geting started using MLCP, go to https://docs.marklogic.com/guide/mlcp/getting-started for some help.
+
+    The following MLCP command line and options file will help you import returns data into the Documents database.
+    The returns data is in a csv file named: GlobalSuperstoreReturns2016.csv
+
+    From a command line, make sure you navigate to the \marklogic_powerbi_tutorial\config directory
+    and type:
+    
+    mlcp.sh -options_file returns.txt
+OR
+    mlcp.bat -options_file returns.txt
+    
+    The returns.txt file contains mlcp import options.
+
+    Once load is complete run this code to make sure you have some returns in the Documents database.
+:)
+
+fn:collection("Returns")[1 to 3]</query><query name="mlcp script load orders" focus="false" listorder="4" taborder="4" active="true" database="12952860939916066628" server="7146967186533113691" database-name="Documents" server-name="App-Services" mode="xquery">(:
+
+    If you are geting started using MLCP, go to https://docs.marklogic.com/guide/mlcp/getting-started for some help.
+
+    The following MLCP command line and options file will help you import orders data into the Documents database.
+    The orders data is in a csv file named: GlobalSuperstoreOrders2016-orders.csv
+
+    From a command line, make sure you navigate to the \marklogic_powerbi_tutorial\config directory
+    and type:
+    
+    mlcp.sh -options_file orders.txt
+OR
+    mlcp.bat -options_file orders.txt
+    
+    The orders.txt file contains mlcp import options.
+
+    Once load is complete run this code to make sure you have some orders in the Documents database.
+:)
+
+fn:collection("Orders")[1 to 3]</query><query name="select count(*)" focus="false" listorder="8" taborder="7" active="true" database="12952860939916066628" server="7146967186533113691" database-name="Documents" server-name="App-Services" mode="xquery">    xquery version "1.0-ml";
+    xdmp:sql("SELECT count(*) FROM customer360.orders;","format"),
+    ",",
+    xdmp:sql("SELECT count(*) FROM customer360.people;","format"),
+    ",",
+    xdmp:sql("SELECT count(*) FROM customer360.returns;","format"),
+    "OK"
+  </query><query name="select sys_tables" focus="false" listorder="7" taborder="8" active="true" database="12952860939916066628" server="7146967186533113691" database-name="Documents" server-name="App-Services" mode="xquery">    xquery version "1.0-ml";
+    xdmp:sql("SELECT * from sys.sys_tables where schema in ('customer360') order by name ;" ,"format")
+  
+  </query></workspace></export>
